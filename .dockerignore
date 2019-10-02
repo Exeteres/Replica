@@ -1,0 +1,7 @@
+settings.json
+.vscode
+.gitignore
+data
+bin
+obj
+Dockerfile
