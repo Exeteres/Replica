@@ -1,0 +1,3 @@
+[submodule "Replica.Core"]
+	path = Replica.Core
+	url = git@github.com:Exeteres/Replica.Core.git
