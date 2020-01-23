@@ -9,6 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Replica.Core\Replica.Controllers\Replica.Controllers.Telegram\Replica.Controllers.Telegram.csproj" />
     <ProjectReference Include="..\Replica.Core\Replica.Controllers\Replica.Controllers.VK\Replica.Controllers.VK.csproj" />
+    <ProjectReference Include="..\Replica.Core\Replica.Controllers\Replica.Controllers.Discord\Replica.Controllers.Discord.csproj" />
     <ProjectReference Include="..\Replica.Core\Replica.Core\Replica.Core.csproj" />
     <ProjectReference Include="..\Replica.Core\Replica.Core.LevelDB\Replica.Core.LevelDB.csproj" />
     <ProjectReference Include="..\Replica.Core\Replica.Core.Commands\Replica.Core.Commands.csproj" />

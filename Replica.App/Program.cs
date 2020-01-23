@@ -21,6 +21,7 @@ using Replica.App.Logic;
 using Serilog;
 using LibGit2Sharp;
 using Serilog.Events;
+using Replica.Controllers.Discord;
 
 namespace Replica.App
 {
@@ -98,6 +99,7 @@ namespace Replica.App
 
             core.RegisterController<TelegramController>();
             core.RegisterController<VkController>();
+            core.RegisterController<DiscordController>();
 
             var commands = core.RegisterModule<CommandsModule>();
             commands.RegisterConverter<UserConverter>();

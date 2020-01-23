@@ -6,7 +6,6 @@ using Replica.App.Extensions;
 using Replica.Core.Entity;
 using Replica.App.Models;
 using Serilog;
-using Serilog.Events;
 
 namespace Replica.App.Middleware
 {
@@ -15,7 +14,7 @@ namespace Replica.App.Middleware
         private string RenderName(UserInfo user)
             => user.FirstName + (!string.IsNullOrEmpty(user.LastName) ? " " + user.LastName : "");
 
-        protected override void TakeOver()
+        protected override async void TakeOver()
         {
             if (Program.Options.Skip && Message.Date < Program.StartTime)
                 return;
@@ -35,7 +34,7 @@ namespace Replica.App.Middleware
             var chat = Context.GetChat();
             var member = Context.GetMember(null, chat);
 
-            if (chat == null || member == null)
+            if (chat == null)
             {
                 Log.Verbose("Chat is null");
                 return;
@@ -59,11 +58,19 @@ namespace Replica.App.Middleware
                 var controller = Program.Core.ResolveController(dest.Controller);
                 var name = RenderName(Message.Sender);
 
+                var profileUrl = Controller.Name switch
+                {
+                    "vk" => $"https://vk.com/id{Context.Message.Sender.Id}",
+                    "tg" => $"https://t.me/{Context.Message.Sender.Id}",
+                    "dc" => "https://google.com",
+                    _ => throw new Exception("в дурку его")
+                };
+
                 var header = controller.Name switch
                 {
-                    "tg" => $"<a href=\"https://vk.com/id{Context.Message.Sender.Id}\">{name}</a>",
+                    "tg" => $"<a href=\"{profileUrl}\">{name}</a>",
                     "vk" => $"[club182157612|{name}]",
-                    _ => throw new Exception("Ты что ебнутый")
+                    _ => ""
                 };
 
                 var message = Message;
@@ -72,10 +79,11 @@ namespace Replica.App.Middleware
                 {
                     var sender = Message.Forwarded[0].Sender;
                     var a = sender.Title == null ? "от" : "из";
-                    header += $" ⤷ Переслано {a} [club182157612|{sender.Title ?? RenderName(sender)}]\n";
+                    if (controller.Name == "vk")
+                        header += $" ⤷ Переслано {a} [club182157612|{sender.Title ?? RenderName(sender)}]\n";
                     message = Message.Forwarded[0];
                 }
-                else header += "\n";
+                else if (controller.Name != "dc") header += "\n";
 
                 var builder = new MessageBuilder()
                     .Replicate(message)
@@ -83,7 +91,24 @@ namespace Replica.App.Middleware
                     .SetText(header);
                 if (!string.IsNullOrEmpty(message.Text))
                     builder.AddText(controller.Name == "tg" ? message.Text.EscapeHTML() : message.Text);
-                controller.SendMessage(dest.ChatId, builder.Build());
+                var outMessage = builder.Build();
+                if (controller.Name == "dc")
+                {
+                    // Мегакостыль
+                    var info = await Controller.GetUserInfo(Context.Message.Sender.Id);
+                    outMessage.AuthorIcon = info.AvatarUrl;
+
+                    outMessage.AuthorName = name;
+                    outMessage.AuthorUrl = profileUrl;
+
+                    if (Controller.Name == "tg" && Message.Forwarded.Length > 0)
+                    {
+                        var sender = Message.Forwarded[0].Sender;
+                        var a = sender.Title == null ? "от" : "из";
+                        outMessage.Footer = $" Переслано {a} {sender.Title ?? RenderName(sender)}\n";
+                    }
+                }
+                await controller.SendMessage(dest.ChatId, outMessage);
                 Log.Verbose("Successfully replicated to {destId} of type {destType}", dest.Id, dest.Controller);
             }
         }
