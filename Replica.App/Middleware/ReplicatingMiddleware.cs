@@ -5,6 +5,8 @@ using Replica.Core.Extensions;
 using Replica.App.Extensions;
 using Replica.Core.Entity;
 using Replica.App.Models;
+using Serilog;
+using Serilog.Events;
 
 namespace Replica.App.Middleware
 {
@@ -25,15 +27,31 @@ namespace Replica.App.Middleware
             }
 
             if (string.IsNullOrEmpty(Message.Text) && Message.Attachments.Length == 0 && Message.Forwarded.Length == 0 && Message.Reply == null)
+            {
+                Log.Verbose("Can't reply message");
                 return;
+            }
 
             var chat = Context.GetChat();
             var member = Context.GetMember(null, chat);
+
             if (chat == null || member == null)
+            {
+                Log.Verbose("Chat is null");
                 return;
+            }
+
+            if (member == null)
+            {
+                Log.Verbose("Member is null");
+                return;
+            }
 
             if (member.Mute > MuteState.None)
+            {
+                Log.Verbose("User {memberId} with username {username} mutted, skipping", member.Id, member.User.Username);
                 return;
+            }
 
             var dests = chat.GetDestinations();
             foreach (var dest in dests)
@@ -66,6 +84,7 @@ namespace Replica.App.Middleware
                 if (!string.IsNullOrEmpty(message.Text))
                     builder.AddText(controller.Name == "tg" ? message.Text.EscapeHTML() : message.Text);
                 controller.SendMessage(dest.ChatId, builder.Build());
+                Log.Verbose("Successfully replicated to {destId} of type {destType}", dest.Id, dest.Controller);
             }
         }
     }

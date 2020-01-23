@@ -1,36 +1,47 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <OutputType>Exe</OutputType>
-        <LangVersion>8.0</LangVersion>
-        <TargetFramework>netcoreapp3.0</TargetFramework>
-    </PropertyGroup>
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <LangVersion>8.0</LangVersion>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+  </PropertyGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\Replica.Core\Replica.Controllers\Replica.Controllers.Telegram\Replica.Controllers.Telegram.csproj" />
-      <ProjectReference Include="..\Replica.Core\Replica.Controllers\Replica.Controllers.VK\Replica.Controllers.VK.csproj" />
-      <ProjectReference Include="..\Replica.Core\Replica.Core\Replica.Core.csproj" />
-      <ProjectReference Include="..\Replica.Core\Replica.Core.LevelDB\Replica.Core.LevelDB.csproj" />
-      <ProjectReference Include="..\Replica.Core\Replica.Core.Commands\Replica.Core.Commands.csproj" />
-      <ProjectReference Include="..\Replica.Core\Replica.Core.Views\Replica.Core.Views.csproj" />
-    </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Replica.Core\Replica.Controllers\Replica.Controllers.Telegram\Replica.Controllers.Telegram.csproj" />
+    <ProjectReference Include="..\Replica.Core\Replica.Controllers\Replica.Controllers.VK\Replica.Controllers.VK.csproj" />
+    <ProjectReference Include="..\Replica.Core\Replica.Core\Replica.Core.csproj" />
+    <ProjectReference Include="..\Replica.Core\Replica.Core.LevelDB\Replica.Core.LevelDB.csproj" />
+    <ProjectReference Include="..\Replica.Core\Replica.Core.Commands\Replica.Core.Commands.csproj" />
+    <ProjectReference Include="..\Replica.Core\Replica.Core.Views\Replica.Core.Views.csproj" />
+  </ItemGroup>
 
-    <ItemGroup>
-      <PackageReference Include="FlexLabs.EntityFrameworkCore.Upsert" Version="2.2.0" />
-      <PackageReference Include="LibGit2Sharp" Version="0.26.1" />
-      <PackageReference Include="LiteDB" Version="4.1.4" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.6" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.2.6" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="2.2.6" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.2.6" />
-      <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.2.0" />
-      <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.2.0" />
-      <PackageReference Include="Serilog.Enrichers.Thread" Version="3.1.0" />
-      <PackageReference Include="Serilog.Sinks.Seq" Version="4.0.0" />
-    </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="FlexLabs.EntityFrameworkCore.Upsert" 
+      Version="2.2.0" />
+    <PackageReference Include="LibGit2Sharp" 
+      Version="0.26.1" />
+    <PackageReference Include="LiteDB" 
+      Version="4.1.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" 
+      Version="2.2.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" 
+      Version="2.2.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" 
+      Version="2.2.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" 
+      Version="2.2.6" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" 
+      Version="2.2.0" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" 
+      Version="2.2.0" />
+    <PackageReference Include="Serilog.Enrichers.Thread" 
+      Version="3.1.0" />
+    <PackageReference Include="Serilog.Sinks.Seq" 
+      Version="4.0.0" />
+  </ItemGroup>
 
-    <ItemGroup>
-      <EmbeddedResource Include="Resources/*.json" />
-    </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources/*.json" />
+  </ItemGroup>
 
 </Project>

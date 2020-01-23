@@ -15,5 +15,6 @@ namespace Replica.App
         public Database Database { get; set; } = new Database();
         public bool Skip { get; set; } = true;
         public bool Changelog { get; set; }
+        public string LogLevel { get; set; } = "Information";
     }
 }

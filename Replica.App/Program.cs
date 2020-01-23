@@ -1,9 +1,14 @@
-﻿using System.Threading;
-using System;
+﻿using System;
+using System.IO;
+using System.Reflection;
+using System.Linq;
+using System.Threading;
 
-using Replica.Core.LevelDB;
 using Replica.Core;
+using Replica.Core.LevelDB;
+using Replica.Core.Entity;
 using Replica.Core.Configuration;
+using Replica.Core.Commands;
 using Replica.Controllers.Telegram;
 using Replica.Controllers.VK;
 
@@ -11,15 +16,11 @@ using Replica.App.Commands;
 using Replica.App.Middleware;
 using Replica.App.Models;
 using Replica.App.Converters;
-using System.Collections.Generic;
-using Replica.Core.Commands;
-using Serilog;
-using System.Linq;
-using LibGit2Sharp;
-using System.IO;
-using Replica.Core.Entity;
-using System.Reflection;
 using Replica.App.Logic;
+
+using Serilog;
+using LibGit2Sharp;
+using Serilog.Events;
 
 namespace Replica.App
 {
@@ -84,13 +85,12 @@ namespace Replica.App
         public static void Main(string[] args)
         {
             Console.CancelKeyPress += OnProcessExit;
+            LoadSettings();
 
             Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Verbose()
+                .MinimumLevel.Is(Enum.Parse<LogEventLevel>(_settings.Options.LogLevel))
                 .WriteTo.Console()
                 .CreateLogger();
-
-            LoadSettings();
 
             var core = new BotCore(_settings);
             core.EnableCaching<LevelCache>();
