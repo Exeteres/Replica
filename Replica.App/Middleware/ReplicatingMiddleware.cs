@@ -6,6 +6,7 @@ using Replica.App.Extensions;
 using Replica.Core.Entity;
 using Replica.App.Models;
 using Serilog;
+using System.Text.RegularExpressions;
 
 namespace Replica.App.Middleware
 {
@@ -62,7 +63,7 @@ namespace Replica.App.Middleware
                 {
                     "vk" => $"https://vk.com/id{Context.Message.Sender.Id}",
                     "tg" => $"https://t.me/{Context.Message.Sender.Id}",
-                    "dc" => "https://google.com",
+                    "dc" => "https://discordapp.com/",
                     _ => throw new Exception("в дурку его")
                 };
 
@@ -74,6 +75,19 @@ namespace Replica.App.Middleware
                 };
 
                 var message = Message;
+
+                if (Controller.Name == "dc" && !string.IsNullOrEmpty(message.Text))
+                {
+                    var pattern = @"<@!?(\d*)>";
+                    var options = RegexOptions.Multiline;
+                    foreach (Match m in Regex.Matches(message.Text, pattern, options))
+                    {
+                        if (m.Groups.Count < 2 && !m.Groups[1].Success) continue;
+                        var id = long.Parse(m.Groups[1].Value);
+                        var user = await Controller.GetUserInfo(id);
+                        message.Text = message.Text.Replace(m.Value, "@" + user.Username);
+                    }
+                }
 
                 if (Controller.Name == "tg" && Message.Forwarded.Length > 0)
                 {
